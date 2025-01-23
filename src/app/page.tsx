@@ -3,6 +3,8 @@
 import { useMicVAD, utils } from '@ricky0123/vad-react'
 import { useState } from 'react'
 
+import { Switch } from '@/components/ui/switch'
+
 export const Demo = () => {
   const [spokenText, setSpokenText] = useState<string>('')
   // const [audioList, setAudioList] = useState<string[]>([])
@@ -24,8 +26,7 @@ export const Demo = () => {
       })
 
       const data = await res.json()
-      console.log(data)
-      setSpokenText((prev) => `${prev} ${data.transcription.text} `)
+      setSpokenText((prev) => `${prev} ${data.message.text} `)
     },
   })
 
@@ -41,15 +42,16 @@ export const Demo = () => {
       {!vad.userSpeaking && 'Not'} speaking
       <h6>Audio count</h6>
       {/* {audioList.length} */}
-      <h6>Start/Pause</h6>
-      <button onClick={vad.pause}>Pause</button>
-      <button onClick={vad.start}>Start</button>
-      <button onClick={vad.toggle}>Toggle</button>
       {/* <div>
         {audioList.map((url, i) => (
           <audio key={i} controls src={url}></audio>
-        ))}
-      </div> */}
+          ))}
+          </div> */}
+      <Switch
+        onCheckedChange={() => {
+          vad.toggle()
+        }}
+      />
       <textarea
         style={{ color: 'blue', height: '100px', width: '100%' }}
         value={spokenText}
