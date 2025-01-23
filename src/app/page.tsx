@@ -2,12 +2,13 @@
 
 import { useMicVAD, utils } from '@ricky0123/vad-react'
 // import { useState } from 'react'
-
+import { Howl } from 'howler'
 import { Switch } from '@/components/ui/switch'
 
 export const Demo = () => {
   // const [spokenText, setSpokenText] = useState<string>('')
   // const [audioList, setAudioList] = useState<string[]>([])
+
   const vad = useMicVAD({
     startOnLoad: false,
     onSpeechEnd: async (audio) => {
@@ -26,6 +27,12 @@ export const Demo = () => {
       })
 
       const audioBlob = await res.blob()
+      const audioUrl = URL.createObjectURL(audioBlob)
+      const sound = new Howl({
+        src: [audioUrl],
+        format: ['mp3'],
+      })
+      sound.play()
       // setSpokenText((prev) => `${prev} ${data.message.text} `)
     },
   })
