@@ -12,16 +12,30 @@ export async function POST(request: Request) {
     file: audioFile as File,
   })
 
-  // if (!audioFile) {
-  //   return Response.json({ error: 'No file provided' }, { status: 400 })
-  // }
-  // try {
-  //   // Use Groq client to process the audio
-  //   return Response.json({  })
-  // } catch (error) {
-  //   console.error('Error processing audio:', error)
-  //   return Response.json({ error: 'Failed to process audio' }, { status: 500 })
-  // }
+  const completition = await openai.chat.completions.create({
+    model: 'gpt-4o-mini-2024-07-18',
+    messages: [
+      {
+        role: 'user',
+        content: response.text,
+      },
+    ],
+  })
 
-  return Response.json({ message: response })
+  const voiceReply = await openai.audio.speech.create({
+    model: 'tts-1',
+    voice: 'shimmer',
+    input: completition.choices[0].message.content!,
+  })
+
+  // res.setHeader('Content-Type', 'audio/mp3')
+  // res.setHeader('Content-Disposition', 'inline; filename="audio.mp3"')
+
+  // // Stream the audio back to the client
+  const buffer = Buffer.from(await voiceReply.arrayBuffer())
+  // res.send(buffer)
+  return new Response(buffer, {
+    status: 200,
+    headers: { 'Content-Type': 'audio/mp3', 'Content-Disposition': 'inline; filename="audio.mp3"' },
+  })
 }

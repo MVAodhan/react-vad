@@ -1,12 +1,12 @@
 'use client'
 
 import { useMicVAD, utils } from '@ricky0123/vad-react'
-import { useState } from 'react'
+// import { useState } from 'react'
 
 import { Switch } from '@/components/ui/switch'
 
 export const Demo = () => {
-  const [spokenText, setSpokenText] = useState<string>('')
+  // const [spokenText, setSpokenText] = useState<string>('')
   // const [audioList, setAudioList] = useState<string[]>([])
   const vad = useMicVAD({
     startOnLoad: false,
@@ -25,38 +25,19 @@ export const Demo = () => {
         body: formData,
       })
 
-      const data = await res.json()
-      setSpokenText((prev) => `${prev} ${data.message.text} `)
+      const audioBlob = await res.blob()
+      // setSpokenText((prev) => `${prev} ${data.message.text} `)
     },
   })
 
   return (
     <div>
-      <h6>Listening</h6>
-      {!vad.listening && 'Not'} listening
-      <h6>Loading</h6>
-      {!vad.loading && 'Not'} loading
-      <h6>Errored</h6>
-      {!vad.errored && 'Not'} errored
-      <h6>User Speaking</h6>
-      {!vad.userSpeaking && 'Not'} speaking
-      <h6>Audio count</h6>
-      {/* {audioList.length} */}
-      {/* <div>
-        {audioList.map((url, i) => (
-          <audio key={i} controls src={url}></audio>
-          ))}
-          </div> */}
       <Switch
         onCheckedChange={() => {
           vad.toggle()
         }}
+        disabled={vad.loading}
       />
-      <textarea
-        style={{ color: 'blue', height: '100px', width: '100%' }}
-        value={spokenText}
-        readOnly
-      ></textarea>
     </div>
   )
 }
